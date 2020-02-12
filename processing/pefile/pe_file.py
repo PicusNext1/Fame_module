@@ -34,7 +34,7 @@ class PEScanner(ProcessingModule):
         ret2 = []
         if not hasattr(pe, 'DIRECTORY_ENTRY_IMPORT'):
             return ret
-        for lib in self.pe.DIRECTORY_ENTRY_IMPORT:
+        for lib in pe.DIRECTORY_ENTRY_IMPORT:
             for imp in lib.imports:
                 ret.append(imp.name)
         
