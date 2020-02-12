@@ -60,7 +60,7 @@ class VirusTotalPublic(ProcessingModule):
             response = vt.get_file_report(sha256)
 
         # if request successful
-        if response['response_code'] == 200 and response['results']['response_code'] == 1:
+        if response['status_code'] == 200 and response['results']['response_code'] == 1:
             self.results['scan_date'] = response['results']['scan_date']
             self.results['permalink'] = response['results']['permalink']
             self.results['positives'] = response['results']['positives']
