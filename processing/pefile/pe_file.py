@@ -7,6 +7,8 @@ import binascii
 import array
 import magic
 # -*- coding: utf-8 -*-
+reload(sys)
+sys.setdefaultencoding("utf8")
 import math
 
 
