@@ -6,13 +6,14 @@ import time
 import binascii
 import array
 import magic
-# -*- coding: utf-8 -*-
-reload(sys)
-sys.setdefaultencoding("utf8")
+import sys
 import math
 
 
 from fame.core.module import ProcessingModule, ModuleInitializationError
+
+reload(sys)
+sys.setdefaultencoding("utf8")
 
 try:
     import pefile
