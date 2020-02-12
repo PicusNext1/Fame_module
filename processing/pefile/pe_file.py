@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import hashlib
 import numbers
 import os
@@ -5,6 +6,7 @@ import time
 import binascii
 import array
 import magic
+# -*- coding: utf-8 -*-
 import math
 
 
@@ -17,7 +19,7 @@ except ImportError:
     HAVE_PEFILE = False
 
 class PEScanner(ProcessingModule):
-    name = 'PE file extract'
+    name = '静态分析'
     description = 'PE file extract'
 
     
