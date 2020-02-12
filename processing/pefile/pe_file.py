@@ -30,10 +30,15 @@ class PEScanner(ProcessingModule):
     def each_with_type(self, target, target_type):
         self.results = {}
         pe = pefile.PE(target)
-        with open(target, 'rb') as f:
-            file = f.read()
-            self.results['filename'] = target
-            self.results['Size'] = os.path.getsize(target)
+        ret = []
+        ret2 = []
+        if not hasattr(pe, 'DIRECTORY_ENTRY_IMPORT'):
+            return ret
+        for lib in self.pe.DIRECTORY_ENTRY_IMPORT:
+            for imp in lib.imports:
+                ret.append(imp.name)
+        
+            self.results['DIRECTORY_ENTRY_IMPORT'] = ret
             
             return True
 
