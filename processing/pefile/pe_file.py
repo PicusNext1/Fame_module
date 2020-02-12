@@ -20,12 +20,7 @@ class PEScanner(ProcessingModule):
     name = 'PE file extract'
     description = 'PE file extract'
 
-    config = [
-        {
-            'type': 'string',
-            'description': 'PE file extract',
-        }
-    ]
+    
     def initialize(self):
         if not HAVE_PEFILE:
             raise ModuleInitializationError(self, 'Missing dependency: pefile')
