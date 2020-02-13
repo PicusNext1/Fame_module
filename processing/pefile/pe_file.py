@@ -17,6 +17,7 @@ sys.setdefaultencoding("utf8")
 
 try:
     import pefile
+    import M2Crypto
     HAVE_PEFILE = True
 except ImportError:
     HAVE_PEFILE = False
@@ -182,6 +183,51 @@ class PEScanner(ProcessingModule):
         return exports
 
     
+     def _get_signature(self):
+        """If this executable is signed, get its signature(s)."""
+        dir_index = pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_SECURITY"]
+        if len(self.pe.OPTIONAL_HEADER.DATA_DIRECTORY) < dir_index:
+            return []
+
+        dir_entry = self.pe.OPTIONAL_HEADER.DATA_DIRECTORY[dir_index]
+        if not dir_entry or not dir_entry.VirtualAddress or not dir_entry.Size:
+            return []
+
+        if not HAVE_MCRYPTO:
+            return []
+
+        signatures = self.pe.write()[dir_entry.VirtualAddress+8:]
+        bio = M2Crypto.BIO.MemoryBuffer(signatures)
+        if not bio:
+            return []
+
+        pkcs7_obj = M2Crypto.m2.pkcs7_read_bio_der(bio.bio_ptr())
+        if not pkcs7_obj:
+            return []
+
+        ret = []
+        p7 = M2Crypto.SMIME.PKCS7(pkcs7_obj)
+        for cert in p7.get0_signers(M2Crypto.X509.X509_Stack()) or []:
+            subject = cert.get_subject()
+            ret.append({
+                "serial_number": "%032x" % cert.get_serial_number(),
+                "common_name": subject.CN,
+                "country": subject.C,
+                "locality": subject.L,
+                "organization": subject.O,
+                "email": subject.Email,
+                "sha1": "%040x" % int(cert.get_fingerprint("sha1"), 16),
+                "md5": "%032x" % int(cert.get_fingerprint("md5"), 16),
+            })
+
+            if subject.GN and subject.SN:
+                ret[-1]["full_name"] = "%s %s" % (subject.GN, subject.SN)
+            elif subject.GN:
+                ret[-1]["full_name"] = subject.GN
+            elif subject.SN:
+                ret[-1]["full_name"] = subject.SN
+        print ret
+        return ret
     
     def each_with_type(self, target, target_type):
         self.results = {}
@@ -193,14 +239,16 @@ class PEScanner(ProcessingModule):
             return False
         imports = self.check_imports()
         exports = self._get_exported_symbols()
+        signature = self._get_signature()
         print(imports)
         print(exports)
         if(imports=={} and exports==[]):
             self.log("debug", 'no report found')
             return False
         else:
-            self.results['DIRECTORY_ENTRY_IMPORT'] =imports
-            self.results['DIRECTORY_ENTRY_EXPORT'] =exports 
+            self.results['DIRECTORY_ENTRY_IMPORT'] = imports
+            self.results['DIRECTORY_ENTRY_EXPORT'] = exports
+            self.results['signature'] = signature
             return True
 
         
