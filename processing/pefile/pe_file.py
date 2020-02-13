@@ -169,7 +169,7 @@ class PEScanner(ProcessingModule):
         self.results = {}
         ret = {}
         self.pe = pefile.PE(target)
-        ret = self.check_imports(self)
+        ret = self.check_imports()
         if(ret!={}):
             self.results['DIRECTORY_ENTRY_IMPORT'] =ret 
             return True
