@@ -152,18 +152,18 @@ class PEScanner(ProcessingModule):
             'Wow64DisableWow64FsRedirection': "Disables file redirection that occurs in 32-bit files loaded on a 64-bit system. If a 32-bit application writes to C:\Windows\System32 after calling this function, then it will write to the real C:\Windows\System32 instead of being redirected to C:\Windows\SysWOW64.",
             'WSAStartup': "Used to initialize low-level network functionality. Finding calls to WSAStartup can often be an easy way to locate the start of network-related functionality."
         }
-        if not hasattr(pe, 'DIRECTORY_ENTRY_IMPORT'):
-            return ret
-        for lib in pe.DIRECTORY_ENTRY_IMPORT:
-            for imp in lib.imports:
-                ret.append(imp.name)
-        for n in ret:
-            if n:
-                n = n.decode()
-                if any(map(n.startswith, alerts.keys())):
-                    for a in alerts:
-                        if n.startswith(a):
-                            ret2[n]=alerts.get(a)
+        if  hasattr(pe, 'DIRECTORY_ENTRY_IMPORT'):
+            for lib in pe.DIRECTORY_ENTRY_IMPORT:
+                for imp in lib.imports:
+                    ret.append(imp.name)
+            for n in ret:
+                if n:
+                    n = n.decode()
+                    if any(map(n.startswith, alerts.keys())):
+                        for a in alerts:
+                            if n.startswith(a):
+                                ret2[n]=alerts.get(a)
+            print(ret2)
             self.results['DIRECTORY_ENTRY_IMPORT'] = ret2
             
             return True
