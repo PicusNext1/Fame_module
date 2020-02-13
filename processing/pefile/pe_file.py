@@ -35,7 +35,11 @@ class PEScanner(ProcessingModule):
     def initialize(self):
         if not HAVE_PEFILE:
             raise ModuleInitializationError(self, 'Missing dependency: pefile')
+        
+        if not HAVE_MCRYPTO:
+            raise ModuleInitializationError(self, 'Missing dependency: M2Crypto')
         return True
+
     
     def check_imports(self):
         ret = []
@@ -196,9 +200,6 @@ class PEScanner(ProcessingModule):
 
         dir_entry = self.pe.OPTIONAL_HEADER.DATA_DIRECTORY[dir_index]
         if not dir_entry or not dir_entry.VirtualAddress or not dir_entry.Size:
-            return []
-
-        if not HAVE_MCRYPTO:
             return []
 
         signatures = self.pe.write()[dir_entry.VirtualAddress+8:]
