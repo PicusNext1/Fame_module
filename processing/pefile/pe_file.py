@@ -192,7 +192,7 @@ class PEScanner(ProcessingModule):
             self.log("debug", 'no report found')
             return False
         imports = self.check_imports()
-        exports = _get_exported_symbols()
+        exports = self._get_exported_symbols()
         print(imports)
         print(exports)
         if(imports=={} and exports==[]):
