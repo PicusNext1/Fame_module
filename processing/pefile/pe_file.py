@@ -198,7 +198,7 @@ class PEScanner(ProcessingModule):
         if(imports=={} and exports==[]):
             self.log("debug", 'no report found')
             return False
-        else
+        else：
             self.results['DIRECTORY_ENTRY_IMPORT'] =imports
             self.results['DIRECTORY_ENTRY_EXPORT'] =exports 
             return True
