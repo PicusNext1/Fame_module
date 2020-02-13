@@ -17,10 +17,15 @@ sys.setdefaultencoding("utf8")
 
 try:
     import pefile
-    import M2Crypto
     HAVE_PEFILE = True
 except ImportError:
     HAVE_PEFILE = False
+
+try:
+    import M2Crypto
+    HAVE_MCRYPTO = True
+except ImportError:
+    HAVE_MCRYPTO = False
 
 class PEScanner(ProcessingModule):
     name = '静态分析'
