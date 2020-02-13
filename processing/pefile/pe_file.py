@@ -164,24 +164,43 @@ class PEScanner(ProcessingModule):
                             ret2[n]=alerts.get(a)
         return ret2
     
-    def checkTSL(self):
-        _tls = self.pe.OPTIONAL_HEADER.DATA_DIRECTORY[
-            pefile.DIRECTORY_ENTRY['IMAGE_DIRECTORY_ENTRY_TLS']].VirtualAddress
-        if _tls:
-            return _tls
-        else:
-            return None
+    def _get_exported_symbols(self):
+        """Gets exported symbols.
+        @return: exported symbols dict or None.
+        """
+        exports = []
+
+        if hasattr(self.pe, "DIRECTORY_ENTRY_EXPORT"):
+            for exported_symbol in self.pe.DIRECTORY_ENTRY_EXPORT.symbols:
+                exports.append({
+                    "address": hex(self.pe.OPTIONAL_HEADER.ImageBase +
+                                   exported_symbol.address),
+                    "name": exported_symbol.name,
+                    "ordinal": exported_symbol.ordinal,
+                })
+
+        return exports
+
+    
     
     def each_with_type(self, target, target_type):
         self.results = {}
-        ret = {}
+        imports = {}
+        exports = []
         self.pe = pefile.PE(target)
-        ret = self.check_imports()
-        ret2 = self.checkTSL()
-        print(ret2)
-        if(ret!={}):
-            self.results['DIRECTORY_ENTRY_IMPORT'] =ret 
+        if not self.pe:
+            self.log("debug", 'no report found')
+            return False
+        imports = self.check_imports()
+        exports = _get_exported_symbols()
+        print(imports)
+        print(exports)
+        if(imports=={}&&exports==[]):
+            self.log("debug", 'no report found')
+            return False
+        else
+            self.results['DIRECTORY_ENTRY_IMPORT'] =imports
+            self.results['DIRECTORY_ENTRY_EXPORT'] =exports 
             return True
 
-        self.log("debug", 'no report found')
-        return False
+        

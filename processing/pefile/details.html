@@ -26,9 +26,29 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <label>导出表</label>
+            <table class='table table-bordered'>
+                <thead>
+                    <tr>
+                        <td>序号</td>
+                        <td>函数</td>
+                        <td>地址</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for exports in results['DIRECTORY_ENTRY_EXPORT'] %}
 
+                            <tr>
+                                <td>{{exports['ordinal']}}</td>
+                                <td>{{exports['name']}}</td>
+                                <td>{{exports['address']}}</td>
 
-          </div>
+                            </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+      </div>
         </div>
     </div>
 </div>
