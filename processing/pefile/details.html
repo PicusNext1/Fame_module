@@ -6,11 +6,26 @@
         </div>
         <div class="content">
           <div>
-
             <label>导入表</label>
-            <div class="labeled_content">
-                {{results['DIRECTORY_ENTRY_IMPORT']}}
-            </div>
+            <table class='table table-bordered'>
+                <thead>
+                    <tr>
+                        <td>函数</td>
+                        <td>说明</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in results['DIRECTORY_ENTRY_IMPORT'] %}
+
+                            <tr>
+                                <td>{{i}}</td>
+                                <td>{{results['DIRECTORY_ENTRY_IMPORT'][i]}}</td>
+
+                            </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
 
 
           </div>
