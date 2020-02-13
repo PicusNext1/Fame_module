@@ -157,7 +157,7 @@ class PEScanner(ProcessingModule):
         for lib in pe.DIRECTORY_ENTRY_IMPORT:
             for imp in lib.imports:
                 ret.append(imp.name)
-            for n in ret:
+        for n in ret:
             if n:
                 n = n.decode()
                 if any(map(n.startswith, alerts.keys())):
