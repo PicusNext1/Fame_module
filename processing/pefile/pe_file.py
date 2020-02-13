@@ -162,14 +162,23 @@ class PEScanner(ProcessingModule):
                     for a in alerts:
                         if n.startswith(a):
                             ret2[n]=alerts.get(a)
-            print(ret2)
         return ret2
+    
+    def checkTSL(self):
+        _tls = self.pe.OPTIONAL_HEADER.DATA_DIRECTORY[
+            pefile.DIRECTORY_ENTRY['IMAGE_DIRECTORY_ENTRY_TLS']].VirtualAddress
+        if _tls:
+            return _tls
+        else:
+            return None
     
     def each_with_type(self, target, target_type):
         self.results = {}
         ret = {}
         self.pe = pefile.PE(target)
         ret = self.check_imports()
+        ret2 = self.checkTSL()
+        print(ret2)
         if(ret!={}):
             self.results['DIRECTORY_ENTRY_IMPORT'] =ret 
             return True
