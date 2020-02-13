@@ -183,7 +183,7 @@ class PEScanner(ProcessingModule):
         return exports
 
     
-     def _get_signature(self):
+    def _get_signature(self):
         """If this executable is signed, get its signature(s)."""
         dir_index = pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_SECURITY"]
         if len(self.pe.OPTIONAL_HEADER.DATA_DIRECTORY) < dir_index:
